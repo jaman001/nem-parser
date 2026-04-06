@@ -1,0 +1,47 @@
+name: nem12-query-generator
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nem12-postgres
+    environment:
+      POSTGRES_DB: nem12db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nem12db"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer
+    container_name: nem12-adminer
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8090:8080"
+
+  app:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nem12db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    deploy:
+      resources:
+        limits:
+          memory: 3g
+        reservations:
+          memory: 900m
+
+volumes:
+  postgres_data:
+

@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      # Each concurrent NMI block needs one connection
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000   # 30s — time to wait for a connection from the pool
+      idle-timeout: 600000        # 10 min — how long idle connections are kept
+      max-lifetime: 1800000       # 30 min — max connection lifetime
+  servlet:
+    multipart:
+      max-file-size: 2GB
+      max-request-size: 2GB
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    root: INFO
+    org.example: INFO
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
